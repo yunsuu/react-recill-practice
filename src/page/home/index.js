@@ -1,21 +1,19 @@
 import {
-    Button,
-    Container,
-    Grid,
-    GridItem,
-    Box,
-    Stack,
-    IconButton,
-    Center, Table, Thead, Tbody, Tr, Th, Td, TableCaption,Image, Divider
+ Table, Thead, Tbody, Tr, Th, Td, TableCaption,Image, Divider
 } from "@chakra-ui/react"
-import ButtomNavbar from "../../components/ButtomNavbar"
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import React, { useState } from 'react';
+
+import { RecoilRoot, useRecoilState, atom } from "recoil";
+import {viewModeData, ShoesData, shopMallData} from "../../recoil/index"
 function Home() {
 
     const [heart, setHeart] = useState(false);
 
+    const [shopMall, setshopMall] = useRecoilState(shopMallData)
+    const _shopMall = shopMall.slice()
+    //console.log(_shopMall)
     return (
         <>
             <PerfectScrollbar>
@@ -27,28 +25,32 @@ function Home() {
                             <Th></Th>
                         </Tr>
                     </Thead>
+                    
                     <Tbody>
-                        <Tr>
+                        {shopMall.map((item, idx) => <Tr key={idx}>
                             <Td>
                             <Image
                                 style={{display:"inline"}}
                                 borderRadius="full"
                                 objectFit="cover"
                                 boxSize="30px"
-                                src="https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcS1UDTOxa0AQG0z7DAq-CITwU4T2ZWCCdMeZYmZrs3VPfy7oadbToXti1P7TlVDBfmyIjb9rtvUtRXpuv7C_MffjSKYCcO6n9lZvPZ6YFPjVCmuhwFabeIe&usqp=CAc"
+                                src={item.img}
                                 alt="Segun Adebayo"
                             />
-                            구찌샵 ✅
+                            {item.name}
                             </Td>
-                            <Td onClick={()=>{setHeart(!heart)}} isNumeric>{heart? 
-                            <i class="far fa-heart"></i> : <i color="red" class="fas fa-heart"/>}
+                            <Td onClick={
+                                ()=>{
+                                    console.log(_shopMall)
+                                    //객체복사가 안되서 에러가 나는것같다 immer을 써보자
+                                    _shopMall[idx]["like"] = !_shopMall[idx].like
+                                    setshopMall(_shopMall)
+                                }
+                            } isNumeric>{item.like? 
+                             <i class="fas fa-heart"/> : <i class="far fa-heart"/> }
                               </Td>
-                        </Tr>
-                        <Tr>
-                            <Td>feet</Td>
- 
-                            <Td isNumeric>30.48</Td>
-                        </Tr>
+                        </Tr>)
+                        }
 
                     </Tbody>
                 </Table>
